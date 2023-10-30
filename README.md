@@ -35,11 +35,11 @@ int main()
   return 0;
 }
 ```
-I just test to produce llvm ir
+To produce llvm IR
 ```
 $ clang --target=tricore -c main.c -S -emit-llvm -o main.ll
 ```
-or
+or produce assemble file
 ```
 $ clang --target=tricore-unknown-linux-gnu -c main.c -S -o main.s
 ```
