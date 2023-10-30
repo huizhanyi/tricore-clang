@@ -6965,6 +6965,7 @@ public:
   }
   void getTargetDefines(const LangOptions &Opts,
                         MacroBuilder &Builder) const override {
+    Builder.defineMacro("__TRICORE__");
   }
   void getTargetBuiltins(const Builtin::Info *&Records,
                          unsigned &NumRecords) const override {
