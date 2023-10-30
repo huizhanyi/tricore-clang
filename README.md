@@ -35,8 +35,13 @@ int main()
   return 0;
 }
 ```
+I just test to produce llvm ir
 ```
-clang --target=tricore -c main.c -S -emit-llvm -o main.ll
+$ clang --target=tricore -c main.c -S -emit-llvm -o main.ll
+```
+or
+```
+$ clang --target=tricore-unknown-linux-gnu -c main.c -S -o main.s
 ```
 ## Author
 Huizhan Yi
