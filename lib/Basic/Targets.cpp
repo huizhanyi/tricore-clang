@@ -6946,7 +6946,62 @@ const Builtin::Info XCoreTargetInfo::BuiltinInfo[] = {
 #include "clang/Basic/BuiltinsXCore.def"
 };
 } // end anonymous namespace.
+namespace {
+// TriCore target
+class TriCoreTargetInfo : public TargetInfo {
+public:
+  TriCoreTargetInfo(const llvm::Triple &Triple) : TargetInfo(Triple) {
+    this->UserLabelPrefix = "";
+    BigEndian = false;
+    BoolWidth = BoolAlign = 8;
+    PointerWidth = PointerAlign = 32;
+    DoubleWidth = DoubleAlign = 64;
+    IntWidth = IntAlign = 32;
+    HalfWidth = HalfAlign = 16;
+    LongWidth = LongAlign = 32;
+    LongLongWidth = 64; LongLongAlign = 32;
 
+    DescriptionString = "e-m:e-p:32:32-i64:32-a:0:32-n32";
+  }
+  void getTargetDefines(const LangOptions &Opts,
+                        MacroBuilder &Builder) const override {
+  }
+  void getTargetBuiltins(const Builtin::Info *&Records,
+                         unsigned &NumRecords) const override {
+    // FIXME: Implement.
+    Records = nullptr;
+    NumRecords = 0;
+  }
+  BuiltinVaListKind getBuiltinVaListKind() const override {
+    // FIXME: implement
+    return TargetInfo::VoidPtrBuiltinVaList;
+  }
+  const char *getClobbers() const override {
+    // FIXME: Is this really right?
+    return "";
+  }
+  void getGCCRegNames(const char * const *&Names,
+                      unsigned &NumNames) const override {
+    static const char * const GCCRegNames[] = {
+      "D0",   "D1",   "D2",   "D3",   "D4",   "D5",   "D6",   "D7",
+      "D8",   "D9",   "D10",  "D11",  "D12",   "D13",   "D14",   "D15",
+      "A0",   "A1",   "A2",   "A3",   "A4",    "A5", "A6", "A7",
+      "A8",   "A9",   "A10",  "A11",  "A12",   "A13", "A14", "A15"
+    };
+    Names = GCCRegNames;
+    NumNames = llvm::array_lengthof(GCCRegNames);
+  }
+  void getGCCRegAliases(const GCCRegAlias *&Aliases,
+                        unsigned &NumAliases) const override {
+    Aliases = nullptr;
+    NumAliases = 0;
+  }
+  bool validateAsmConstraint(const char *&Name,
+                             TargetInfo::ConstraintInfo &Info) const override {
+    return false;
+  }
+};
+} // end anonymous namespace
 namespace {
 // x86_32 Android target
 class AndroidX86_32TargetInfo : public LinuxTargetInfo<X86_32TargetInfo> {
@@ -6989,6 +7044,9 @@ static TargetInfo *AllocateTarget(const llvm::Triple &Triple) {
 
   case llvm::Triple::xcore:
     return new XCoreTargetInfo(Triple);
+
+  case llvm::Triple::tricore:
+    return new TriCoreTargetInfo(Triple);
 
   case llvm::Triple::hexagon:
     return new HexagonTargetInfo(Triple);
